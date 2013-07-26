@@ -11,6 +11,8 @@ import (
 
 const VERSION = "0.1.0"
 
+var Config string
+
 func handleSignals() {
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGHUP) // Add syscalls as needed
@@ -24,6 +26,7 @@ func handleSignals() {
 }
 
 func init() {
+	config := flag.String("config", "config.ini", "path to config file")
 	version := flag.Bool("v", false, "prints current project version")
 
 	flag.Usage = func() {
@@ -37,10 +40,15 @@ func init() {
 		fmt.Println(VERSION)
 		os.Exit(0)
 	}
+
+	// Instead parse and store as global config object
+	Config = *config
 }
 
 func main() {
 	go handleSignals()
 
 	log.Println("[INFO] Starting project")
+
+	log.Printf("[INFO] Using config file: %s", Config)
 }
